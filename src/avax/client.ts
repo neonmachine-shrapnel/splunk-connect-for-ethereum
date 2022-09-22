@@ -1,13 +1,13 @@
 import fetch, { Response } from 'node-fetch';
-import { EthRequest } from '../eth/requests';
 
 export class AvalancheClient {
-    private mainnet: string = 'https://api.avax.network/';
-    private testnet: string = 'https://api.avax-test.network/';
+    private url: string;
 
-    constructor() {}
+    constructor(url: string = 'http://127.0.0.1:9650/') {
+        this.url = url;
+    }
 
-    async peerCount(nodeIDs: [] = [], network: string = 'mainnet'): Promise<number> {
+    async peerCount(nodeIDs: [] = []): Promise<number> {
         const data: {} = {
             jsonrpc: '2.0',
             id: 1,
@@ -16,7 +16,7 @@ export class AvalancheClient {
                 nodeIDs: nodeIDs,
             },
         };
-        const response: Response = await fetch(`${network === 'mainnet' ? this.mainnet : this.testnet}ext/info`, {
+        const response: Response = await fetch(`${this.url}ext/info`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

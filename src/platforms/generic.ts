@@ -46,7 +46,7 @@ export async function captureDefaultMetrics(
     const [blockNumberResult, hashRateResult, peerCountResult, gasPriceResult, syncStatus] = await Promise.all([
         eth.request(blockNumber()),
         supports.hashRate === false ? undefined : eth.request(hashRate()),
-        supports.peerCount === false ? undefined : await avalanche.peerCount(),
+        supports.peerCount === false ? avalanche.peerCount() : eth.request(peerCount()),
         eth
             .request(gasPrice())
             .then(value => bigIntToNumber(value))
@@ -155,7 +155,7 @@ export class GenericNodeAdapter implements NodePlatformAdapter {
         const [supportsPendingTransactions, supportsHashRate, supportsPeerCount] = await Promise.all([
             checkRpcMethodSupport(ethClient, pendingTransactions()),
             checkRpcMethodSupport(ethClient, hashRate()),
-            checkRpcMethodSupport(ethClient, avalanche.peerCount()),
+            checkRpcMethodSupport(ethClient, peerCount()),
         ]);
         this.supports = {
             pendingTransactions: supportsPendingTransactions,
