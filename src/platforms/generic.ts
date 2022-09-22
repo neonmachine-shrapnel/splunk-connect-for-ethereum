@@ -1,6 +1,7 @@
 import { NodePlatformAdapter } from '.';
 import { EthereumClient } from '../eth/client';
 import { JsonRpcError } from '../eth/jsonrpc';
+import { AvalancheClient } from '../avax/client';
 import { KNOWN_NETOWORK_NAMES, lookupKnownNetwork } from '../eth/networks';
 import {
     blockNumber,
@@ -22,6 +23,7 @@ import { bigIntToNumber } from '../utils/bn';
 import { createModuleDebug } from '../utils/debug';
 import { prefixKeys } from '../utils/obj';
 
+const avalanche: AvalancheClient = new AvalancheClient();
 const { debug, warn, error } = createModuleDebug('platforms:generic');
 
 export async function checkRpcMethodSupport(eth: EthereumClient, req: EthRequest<any, any>): Promise<boolean> {
@@ -44,7 +46,7 @@ export async function captureDefaultMetrics(
     const [blockNumberResult, hashRateResult, peerCountResult, gasPriceResult, syncStatus] = await Promise.all([
         eth.request(blockNumber()),
         supports.hashRate === false ? undefined : eth.request(hashRate()),
-        supports.peerCount === false ? undefined : eth.request(peerCount()),
+        supports.peerCount === false ? undefined : await avalanche.peerCount(),
         eth
             .request(gasPrice())
             .then(value => bigIntToNumber(value))
@@ -153,7 +155,7 @@ export class GenericNodeAdapter implements NodePlatformAdapter {
         const [supportsPendingTransactions, supportsHashRate, supportsPeerCount] = await Promise.all([
             checkRpcMethodSupport(ethClient, pendingTransactions()),
             checkRpcMethodSupport(ethClient, hashRate()),
-            checkRpcMethodSupport(ethClient, peerCount()),
+            checkRpcMethodSupport(ethClient, avalanche.peerCount()),
         ]);
         this.supports = {
             pendingTransactions: supportsPendingTransactions,
