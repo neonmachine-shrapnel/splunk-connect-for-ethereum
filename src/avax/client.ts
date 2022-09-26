@@ -7,7 +7,7 @@ export class AvalancheClient {
         this.url = url;
     }
 
-    async peerCount(nodeIDs: [] = []): Promise<number> {
+    async peerInfo(nodeIDs: [] = []): Promise<any> {
         const data: {} = {
             jsonrpc: '2.0',
             id: 1,
@@ -24,6 +24,16 @@ export class AvalancheClient {
             body: JSON.stringify(data),
         });
         const json: { result: any } = await response.json();
-        return parseInt(json.result['numPeers']);
+        return json.result
+    }
+
+    async peerCount(nodeIDs: [] = []): Promise<number> {
+        const peers = await this.peerInfo(nodeIDs)
+        return parseInt(peers['numPeers']);
+    }
+
+    async peers(nodeIDs: [] = []): Promise<any> {
+        const peers = await this.peerInfo(nodeIDs)
+        return peers['peers'];
     }
 }

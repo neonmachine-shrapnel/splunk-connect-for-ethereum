@@ -1,7 +1,6 @@
 import { NodePlatformAdapter } from '.';
 import { EthereumClient } from '../eth/client';
 import { JsonRpcError } from '../eth/jsonrpc';
-import { AvalancheClient } from '../avax/client';
 import { KNOWN_NETOWORK_NAMES, lookupKnownNetwork } from '../eth/networks';
 import {
     blockNumber,
@@ -23,7 +22,6 @@ import { bigIntToNumber } from '../utils/bn';
 import { createModuleDebug } from '../utils/debug';
 import { prefixKeys } from '../utils/obj';
 
-const avalanche: AvalancheClient = new AvalancheClient();
 const { debug, warn, error } = createModuleDebug('platforms:generic');
 
 export async function checkRpcMethodSupport(eth: EthereumClient, req: EthRequest<any, any>): Promise<boolean> {
@@ -46,7 +44,7 @@ export async function captureDefaultMetrics(
     const [blockNumberResult, hashRateResult, peerCountResult, gasPriceResult, syncStatus] = await Promise.all([
         eth.request(blockNumber()),
         supports.hashRate === false ? undefined : eth.request(hashRate()),
-        supports.peerCount === false ? avalanche.peerCount() : eth.request(peerCount()),
+        supports.peerCount === false ? undefined : eth.request(peerCount()),
         eth
             .request(gasPrice())
             .then(value => bigIntToNumber(value))
@@ -54,7 +52,12 @@ export async function captureDefaultMetrics(
                 warn('Error obtaining gas price: %s', e.message);
                 return undefined;
             }),
-        eth.request(syncing()),
+        eth
+            .request(syncing())
+            .catch(e => {
+                warn('Error obtaining sync status: %s', e.message);
+                return undefined
+            })
     ]);
     return {
         type: 'nodeMetrics',
