@@ -7,6 +7,7 @@ import { GethAdapter } from './platforms/geth';
 import { ParityAdapter } from './platforms/parity';
 import { QuorumAdapter } from './platforms/quorum';
 import { BesuAdapter } from './platforms/besu';
+import { AvaxAdapter } from './platforms/avax';
 import { retry, linearBackoff } from './utils/retry';
 
 const { debug, info, warn, error } = createModuleDebug('introspect');
@@ -29,6 +30,10 @@ export function createNodeAdapter(version: string, chain?: string, network?: str
     } else if (version.startsWith('besu')) {
         debug('Detected besu node');
         return new BesuAdapter(version, chain, network);
+    }
+    if(typeof chain == "string" && chain == "cchain") {
+        debug('Detected avalanche node');
+        return new AvaxAdapter(version, chain, network)
     }
     debug('No specific support for given node type, falling bakc to generic adapter');
     return new GenericNodeAdapter(version, chain, network);

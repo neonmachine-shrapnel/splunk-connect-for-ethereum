@@ -205,3 +205,15 @@ export interface ParityPendingTransaction extends RawTransactionResponse {
     condition: { time: string } | { block: string } | null;
     // Object - (optional) Conditional submission, Block number in block or timestamp in time or null.
 }
+
+export interface AvaxPeer {
+    ip: string,
+    publicIP: string,
+    nodeID: string,
+    version: string,
+    lastSent: string,
+    lastReceived: string,
+    observedUptime: string,
+    trackedSubnets: string[],
+    benched: string[]
+}

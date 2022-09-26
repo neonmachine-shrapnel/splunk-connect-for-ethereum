@@ -560,6 +560,38 @@
         "infoURL": "https://athereum.ava.network"
     },
     {
+        "name": "Avalanche Mainnet",
+        "chainId": 43114,
+        "shortName": "avax",
+        "chain": "cchain",
+        "network": "avalanche",
+        "networkId": 43114,
+        "nativeCurrency": {
+            "name": "Avalanche C Chain",
+            "symbol": "AVAX",
+            "decimals": 18
+        },
+        "rpc": ["https://api.avax.network/ext/C/rpc"],
+        "faucets": [],
+        "infoURL": "https://avax.network"
+    },
+    {
+        "name": "Avalanche Testnet",
+        "chainId": 43113,
+        "shortName": "fuji",
+        "chain": "cchain",
+        "network": "fuji",
+        "networkId": 43113,
+        "nativeCurrency": {
+            "name": "Fuji C Chain",
+            "symbol": "AVAX",
+            "decimals": 18
+        },
+        "rpc": ["https://api.avax-test.network/ext/C/rpc"],
+        "faucets": ["https://faucet.avax.network"],
+        "infoURL": "https://avax.network"
+    },
+    {
         "name": "Energi Testnet",
         "chainId": 49797,
         "shortName": "tnrg",
